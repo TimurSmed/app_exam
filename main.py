@@ -5,11 +5,10 @@ from api.routes import exercises, workouts, diets, favorites
 
 app = FastAPI(title="Fitness Backend")
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],      # разрешить любые домены
-    allow_credentials=False,  # для "*" должно быть False
+    allow_origins=["*"],   # разрешить любые домены
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
