@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.session import get_db
@@ -34,3 +34,24 @@ def create_favorite(
     db.refresh(db_favorite)
 
     return db_favorite
+
+
+@router.delete("/{favorite_id}")
+def delete_favorite(
+    favorite_id: int,
+    db: Session = Depends(get_db)
+):
+    favorite = db.query(Favorite)\
+        .filter(Favorite.id == favorite_id)\
+        .first()
+
+    if not favorite:
+        raise HTTPException(
+            status_code=404,
+            detail="Favorite not found"
+        )
+
+    db.delete(favorite)
+    db.commit()
+
+    return {"message": "Favorite deleted"}
