@@ -18,6 +18,17 @@ def get_exercises(
     return db.query(Exercise).all()
 
 
+@router.get("/search")
+def search_exercises(
+    q: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return db.query(Exercise)\
+        .filter(Exercise.name.contains(q))\
+        .all()
+
+
+
 @router.get("/{exercise_id}")
 def get_exercise(
     exercise_id: int,
@@ -76,15 +87,6 @@ def update_exercise(
 
     return db_exercise
 
-
-@router.get("/search")
-def search_exercises(
-    q: str = Query(...),
-    db: Session = Depends(get_db)
-):
-    return db.query(Exercise)\
-        .filter(Exercise.name.contains(q))\
-        .all()
 
 
 @router.delete("/{exercise_id}")

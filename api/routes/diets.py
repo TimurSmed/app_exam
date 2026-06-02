@@ -18,6 +18,27 @@ def get_diets(
     return db.query(DietPlan).all()
 
 
+@router.get("/search")
+def search_diets(
+    q: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return db.query(DietPlan)\
+        .filter(DietPlan.title.contains(q))\
+        .all()
+
+
+@router.get("/user/{user_id}")
+def get_user_diets(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    return db.query(DietPlan)\
+        .filter(DietPlan.created_by == user_id)\
+        .all()
+
+
+
 @router.get("/{diet_id}")
 def get_diet(
     diet_id: int,
@@ -35,15 +56,6 @@ def get_diet(
 
     return diet
 
-
-@router.get("/user/{user_id}")
-def get_user_diets(
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    return db.query(DietPlan)\
-        .filter(DietPlan.created_by == user_id)\
-        .all()
 
 
 @router.post("/")
@@ -86,15 +98,6 @@ def update_diet(
 
     return db_diet
 
-
-@router.get("/search")
-def search_diets(
-    q: str = Query(...),
-    db: Session = Depends(get_db)
-):
-    return db.query(DietPlan)\
-        .filter(DietPlan.title.contains(q))\
-        .all()
 
 
 @router.delete("/{diet_id}")

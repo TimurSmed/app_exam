@@ -18,6 +18,28 @@ def get_workouts(
     return db.query(WorkoutProgram).all()
 
 
+@router.get("/search")
+def search_workouts(
+    q: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    return db.query(WorkoutProgram)\
+        .filter(WorkoutProgram.title.contains(q))\
+        .all()
+
+
+
+@router.get("/user/{user_id}")
+def get_user_workouts(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    return db.query(WorkoutProgram)\
+        .filter(WorkoutProgram.created_by == user_id)\
+        .all()
+
+
+
 @router.get("/{workout_id}")
 def get_workout(
     workout_id: int,
@@ -35,14 +57,6 @@ def get_workout(
 
     return workout
 
-@router.get("/user/{user_id}")
-def get_user_workouts(
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    return db.query(WorkoutProgram)\
-        .filter(WorkoutProgram.created_by == user_id)\
-        .all()
 
 
 @router.post("/")
@@ -85,15 +99,6 @@ def update_workout(
 
     return db_workout
 
-
-@router.get("/search")
-def search_workouts(
-    q: str = Query(...),
-    db: Session = Depends(get_db)
-):
-    return db.query(WorkoutProgram)\
-        .filter(WorkoutProgram.title.contains(q))\
-        .all()
 
 
 @router.delete("/{workout_id}")
